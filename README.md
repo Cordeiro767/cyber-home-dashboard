@@ -1,59 +1,59 @@
+<div align="center">
+
 # Cyber Home Dashboard
 
-Central local e defensiva para monitorar uma rede doméstica, o notebook e a saúde da conexão com a internet.
+**Local network monitoring dashboard built with FastAPI, SQLite, WebSocket and a cyberpunk UI.**
 
-> Projeto de portfólio em Python/FastAPI + frontend vanilla, feito para uso local em redes próprias ou explicitamente autorizadas.
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-Realtime-00D9FF?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-1fb56b?style=flat-square)
 
-## Screenshots
+Central local e defensiva para monitorar dispositivos autorizados, saúde do notebook e conectividade da internet.
+
+</div>
+
+---
+
+## Preview
 
 ![Dashboard overview](docs/screenshots/dashboard-overview.png)
-![System monitor](docs/screenshots/system-monitor.png)
-![Network topology](docs/screenshots/network-topology.png)
-![Safe terminal](docs/screenshots/safe-terminal.png)
 
-As imagens de portfolio usam identificadores e enderecos de rede mascarados.
+| System Monitor | Network Topology | Safe Terminal |
+| --- | --- | --- |
+| ![System monitor](docs/screenshots/system-monitor.png) | ![Network topology](docs/screenshots/network-topology.png) | ![Safe terminal](docs/screenshots/safe-terminal.png) |
 
-## Demo
+As imagens de portfólio usam identificadores e endereços de rede mascarados.
 
-Uma gravacao curta da interface em execucao esta disponivel em
-[docs/demo/dashboard-demo.webm](docs/demo/dashboard-demo.webm).
+**[Assistir demonstração curta](docs/demo/dashboard-demo.webm)**
 
-## Funcionalidades
+## Features
 
-- Inventário local de dispositivos da rede autorizada.
-- Perfis de rede separados por gateway/sub-rede/SSID para não misturar casa, trabalho e outros locais.
-- Detecção de dispositivos novos, offline e retornando online.
-- Baseline de dispositivos e alertas para mudanças de portas, hostname, vendor, MAC e IP.
-- Mapa de topologia com posições persistidas em SQLite.
-- WebSocket para atualizações em tempo real.
-- Monitor do notebook: CPU, RAM, disco, uptime, processos pesados e temperatura quando disponível.
-- Monitor de internet: gateway, ping para `8.8.8.8`, média de latência e últimos 60 pings em memória.
-- Safe Commands: botões allowlistados para diagnósticos locais, sem terminal livre.
-- Exportação CSV/JSON para inventário e detalhes de dispositivos.
-- Interface cyberpunk responsiva para demonstração visual em portfólio.
+- Inventário local de dispositivos limitado à sub-rede autorizada.
+- Perfis de rede separados por gateway, sub-rede e SSID para preservar históricos por ambiente.
+- Eventos de dispositivos novos, offline e retornando online.
+- Baseline de mudanças em hostname, vendor, MAC, IP e portas observadas.
+- Topologia visual da rede com posições persistidas em SQLite.
+- Atualizações em tempo real por WebSocket.
+- Monitor local de CPU, RAM, disco, uptime, processos pesados e temperatura, quando disponível.
+- Saúde da internet com gateway, ping controlado para `8.8.8.8` e histórico recente de latência.
+- Safe Terminal com ações fixas e allowlistadas, sem comando livre.
+- Exportação de inventário e detalhes em CSV/JSON.
 
 ## Stack
 
-- Python 3.10+
-- FastAPI
-- Uvicorn
-- SQLite
-- WebSocket
-- psutil
-- HTML, CSS e JavaScript vanilla
-- Chart.js
-- vis-network
-- Nmap opcional
+| Camada | Tecnologia |
+| --- | --- |
+| Backend | Python, FastAPI, Uvicorn |
+| Dados | SQLite |
+| Tempo real | WebSocket |
+| Métricas locais | psutil |
+| Frontend | HTML, CSS, JavaScript vanilla |
+| Visualização | Chart.js, vis-network |
+| Descoberta opcional | Nmap |
 
-## Segurança e Uso Permitido
-
-Este projeto é defensivo e educacional.
-
-Use apenas em redes próprias ou com autorização explícita. O dashboard não deve ser usado para escanear IP público, explorar vulnerabilidades, burlar autenticação, fazer brute force ou acessar dispositivos de terceiros.
-
-Por padrão, o scanner respeita `ALLOWED_NETWORK` e pode operar sem Nmap usando dados locais de ARP/ping controlado. O módulo de internet faz apenas pings controlados para gateway local e `8.8.8.8`.
-
-## Instalação No Windows
+## Como rodar no Windows
 
 ```powershell
 cd C:\caminho\cyber-home-dashboard
@@ -63,17 +63,13 @@ py -3 -m venv .venv
 Copy-Item .env.example .env
 ```
 
-Se o PowerShell bloquear ativação de venv, você pode rodar usando o Python da venv diretamente, como nos comandos acima.
-
-## Configuração
-
-Descubra a sub-rede local atual:
+Descubra sua sub-rede local autorizada:
 
 ```powershell
 py -3 .\detect_local_network.py
 ```
 
-Edite `.env`:
+Configure `.env` usando somente a sua rede:
 
 ```env
 SCAN_INTERVAL_SECONDS=60
@@ -82,69 +78,81 @@ USE_NMAP=false
 FALLBACK_SWEEP=false
 ```
 
-## Como Rodar
-
-Com Python global:
+Inicie o dashboard:
 
 ```powershell
-cd C:\caminho\cyber-home-dashboard
-py -3 -m uvicorn main:app --host 127.0.0.1 --port 8000 --app-dir backend
-```
-
-Com venv:
-
-```powershell
-cd C:\caminho\cyber-home-dashboard
 .\.venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000 --app-dir backend
 ```
 
-Abra:
+Abra [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-[http://127.0.0.1:8000](http://127.0.0.1:8000)
+## Estrutura
 
-## Endpoints Principais
-
-- `GET /health`
-- `GET /api/status`
-- `POST /api/scan`
-- `GET /api/devices`
-- `GET /api/networks`
-- `GET /api/networks/current`
-- `PATCH /api/networks/{id}`
-- `GET /api/topology`
-- `GET /api/system/status`
-- `GET /api/network/health`
-- `POST /api/tools/run`
-- `WS /ws/events`
-
-## Safe Commands
-
-O endpoint `POST /api/tools/run` aceita apenas nomes de ações allowlistadas:
-
-```json
-{ "action": "ping_google" }
+```text
+backend/                 API FastAPI, scanner, banco, monitoramento e WebSocket
+frontend/                Interface web e visualização de topologia
+docs/                    Arquitetura, imagens, demo e notas complementares
+scripts/                 Captura controlada de mídia para demonstração
+.env.example             Configuração segura de exemplo
+PROJECT_SUMMARY.md       Visão técnica do projeto
+ROADMAP.md               Evolução planejada
+SECURITY.md              Limites de uso e política de segurança
 ```
 
-Ações disponíveis:
+## API principal
 
-- `ping_gateway`
-- `ping_google`
-- `ipconfig`
-- `routes`
-- `system_status`
+| Endpoint | Uso |
+| --- | --- |
+| `GET /health` | Estado básico do backend |
+| `GET /api/system/status` | Métricas do notebook |
+| `GET /api/network/health` | Saúde da conexão e histórico |
+| `GET /api/networks` | Perfis de rede identificados |
+| `GET /api/devices` | Inventário filtrado por rede |
+| `GET /api/topology` | Nós e relações visuais |
+| `POST /api/tools/run` | Comandos seguros allowlistados |
+| `WS /ws/events` | Atualizações em tempo real |
 
-Não existe execução livre de comandos.
+## Segurança e uso ético
+
+Este projeto foi construído para aprendizado e monitoramento defensivo em redes próprias ou explicitamente autorizadas.
+
+- Não realiza brute force.
+- Não explora vulnerabilidades.
+- Não escaneia IPs públicos.
+- Não expõe dispositivos à internet.
+- Não aceita execução livre de comandos no terminal web.
+- Não versiona `.env`, banco local, logs ou capturas de tráfego.
+
+Leia [SECURITY.md](SECURITY.md) antes de adaptar o scanner ou disponibilizar a aplicação na rede local.
+
+## Aprendizados
+
+Este projeto reúne estudos práticos sobre:
+
+- separação de histórico por contexto de rede;
+- APIs e atualizações em tempo real;
+- observabilidade local com métricas úteis;
+- desenho de ferramentas defensivas com escopo limitado;
+- cuidado com privacidade ao publicar screenshots e demonstrações.
 
 ## Roadmap
 
-- Docker e Docker Compose.
-- Autenticação local para proteger o dashboard.
-- Notificações para eventos críticos.
-- IA analisando eventos e sugerindo ações defensivas.
-- Deploy local em mini PC ou Raspberry Pi.
-- Persistência do histórico de internet no SQLite.
-- Página de relatórios para exportar evidências de monitoramento.
+- Persistência de histórico de conectividade.
+- Autenticação local para acesso ao dashboard.
+- Docker e execução em mini PC ou Raspberry Pi.
+- Notificações locais para eventos relevantes.
+- Uso responsável de IA para resumir eventos e sugerir verificações defensivas.
+
+Veja o planejamento completo em [ROADMAP.md](ROADMAP.md).
+
+## Documentação
+
+- [Resumo técnico](PROJECT_SUMMARY.md)
+- [Arquitetura](docs/architecture.md)
+- [Política de segurança](SECURITY.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 
 ## Licença
 
-MIT. Veja [LICENSE](LICENSE).
+Distribuído sob licença MIT. Veja [LICENSE](LICENSE).
