@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Local configuration
+.env
+
+# Runtime data
+data/*.db
+data/*.db-*
+logs/*.log
+diagnostics/*.json
+
+# Network captures and large local artifacts
+*.pcap
+*.pcapng
+*.etl
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep curated portfolio media in docs/screenshots and docs/demo.
+docs/demo/frames/

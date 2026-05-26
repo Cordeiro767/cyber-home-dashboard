@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Home Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <div class="scanlines"></div>
+
+  <header class="header-glow">
+    <h1>CYBER HOME DASHBOARD</h1>
+    <p class="subtitle">v1.0 - system - internet - safe terminal - live</p>
+    <span id="wsIndicator" class="ws-indicator ws-off">● OFFLINE</span>
+  </header>
+
+  <div id="alertBanner" class="alert-banner hidden" role="alert">
+    <span class="alert-icon">⚠</span>
+    <span id="alertText"></span>
+  </div>
+
+  <section class="network-profile panel-live">
+    <div>
+      <span class="network-label">Rede atual</span>
+      <strong id="currentNetworkName">Detectando...</strong>
+      <small id="currentNetworkMeta">--</small>
+    </div>
+    <label>Perfil
+      <select id="networkSelect">
+        <option value="current">Rede atual</option>
+      </select>
+    </label>
+    <label class="check-row">
+      <input type="checkbox" id="currentOnlyToggle" checked />
+      Mostrar apenas rede atual
+    </label>
+    <div class="rename-network">
+      <input type="text" id="networkRenameInput" maxlength="80" placeholder="Nome da rede" />
+      <button type="button" id="networkRenameBtn" class="btn-secondary btn-small">Renomear</button>
+    </div>
+  </section>
+
+  <section class="stats" id="stats">
+    <div class="stat-card online pulse-glow">
+      <span class="stat-value" id="statOnline">0</span>
+      <span class="stat-label">Online</span>
+    </div>
+    <div class="stat-card offline">
+      <span class="stat-value" id="statOffline">0</span>
+      <span class="stat-label">Offline</span>
+    </div>
+    <div class="stat-card new">
+      <span class="stat-value" id="statNew">0</span>
+      <span class="stat-label">Novos</span>
+    </div>
+    <div class="stat-card total">
+      <span class="stat-value" id="statTotal">0</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card scan">
+      <span class="stat-value stat-small" id="lastScan">—</span>
+      <span class="stat-label">Último scan</span>
+    </div>
+  </section>
+
+  <section class="utility-grid">
+    <article class="utility-card panel-live">
+      <h2 class="panel-title">System Monitor</h2>
+      <div class="metric-grid">
+        <div><span id="sysCpu" class="metric-value">--%</span><small>CPU</small></div>
+        <div><span id="sysRam" class="metric-value">--%</span><small>RAM</small></div>
+        <div><span id="sysDisk" class="metric-value">--%</span><small>Disco</small></div>
+        <div><span id="sysUptime" class="metric-value metric-small">--</span><small>Uptime</small></div>
+      </div>
+      <div class="utility-subline" id="sysTemp">Temp: indisponivel</div>
+      <ol id="sysProcesses" class="process-list"></ol>
+    </article>
+
+    <article class="utility-card panel-live">
+      <h2 class="panel-title">Internet Health</h2>
+      <div class="internet-status" id="netStatus">--</div>
+      <div class="health-row"><span>Gateway</span><strong id="netGateway">--</strong></div>
+      <div class="health-row"><span>Ping gateway</span><strong id="netGatewayPing">--</strong></div>
+      <div class="health-row"><span>Ping 8.8.8.8</span><strong id="netInternetPing">--</strong></div>
+      <div class="health-row"><span>Media</span><strong id="netAveragePing">--</strong></div>
+      <div id="pingHistory" class="ping-history"></div>
+    </article>
+
+    <article class="utility-card safe-terminal panel-live">
+      <h2 class="panel-title">Safe Commands</h2>
+      <div class="safe-actions">
+        <button type="button" class="btn-secondary btn-small safe-cmd" data-action="ping_gateway">Ping gateway</button>
+        <button type="button" class="btn-secondary btn-small safe-cmd" data-action="ping_google">Ping 8.8.8.8</button>
+        <button type="button" class="btn-secondary btn-small safe-cmd" data-action="ipconfig">ipconfig</button>
+        <button type="button" class="btn-secondary btn-small safe-cmd" data-action="routes">Rotas</button>
+        <button type="button" class="btn-secondary btn-small safe-cmd" data-action="system_status">Sistema</button>
+      </div>
+      <pre id="safeTerminalOutput" class="safe-output">Aguardando comando seguro...</pre>
+    </article>
+  </section>
+
+  <section class="panel-topology panel-live">
+    <div class="topology-header">
+      <h2 class="panel-title">Network Topology</h2>
+      <div class="topology-controls">
+        <button type="button" id="topologyZoomIn" class="btn-secondary btn-small" title="Zoom in">+</button>
+        <button type="button" id="topologyZoomOut" class="btn-secondary btn-small" title="Zoom out">−</button>
+        <button type="button" id="topologyFit" class="btn-secondary btn-small">Ajustar</button>
+      </div>
+    </div>
+    <div class="topology-wrap">
+      <div id="topologyNetwork" class="topology-canvas"></div>
+      <div id="topologyTooltip" class="topology-tooltip hidden"></div>
+    </div>
+    <p class="topology-hint">Arraste nós · scroll para zoom · roteador no centro</p>
+  </section>
+
+  <section class="chart-panel panel-live">
+    <h2 class="panel-title">Online / Offline · histórico</h2>
+    <canvas id="networkChart" height="80"></canvas>
+  </section>
+
+  <section class="controls">
+    <button id="scanBtn" type="button" class="btn-primary">⟳ ESCANEAR</button>
+    <button id="autoScanBtn" type="button" class="btn-toggle">AUTO-SCAN: OFF</button>
+    <button id="markSeenBtn" type="button" class="btn-secondary">✓ MARCAR COMO VISTO</button>
+    <a id="exportCsvBtn" class="btn-secondary" href="/api/devices/export.csv" download>↓ EXPORT CSV</a>
+    <span id="status" class="status">Conectando live feed…</span>
+  </section>
+
+  <section class="filters">
+    <label>Status <select id="filterStatus"><option value="">Todos</option><option value="NEW">NOVO</option><option value="ONLINE">ONLINE</option><option value="OFFLINE">OFFLINE</option></select></label>
+    <label>Tipo <select id="filterType"><option value="">Todos</option><option value="router">Router</option><option value="laptop">Laptop</option><option value="camera">Câmera</option><option value="phone">Phone</option><option value="unknown">Unknown</option></select></label>
+    <label>Risco <select id="filterRisk"><option value="">Todos</option><option value="LOW">LOW</option><option value="MEDIUM">MEDIUM</option><option value="HIGH">HIGH</option><option value="CRITICAL">CRITICAL</option></select></label>
+    <button id="clearFilters" type="button" class="btn-secondary btn-small">Limpar filtros</button>
+  </section>
+
+  <div class="layout layout-v5">
+    <div class="col-main">
+      <main class="panel-devices panel-live">
+        <h2 class="panel-title">Dispositivos <span class="live-tag">LIVE</span></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>IP</th>
+                <th>Ping</th>
+                <th>Tipo</th>
+                <th>Tag</th>
+                <th>Status</th>
+                <th>Risco</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="deviceTable">
+              <tr><td colspan="8" class="empty">Aguardando dados…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+      <section class="panel-terminal panel-live">
+        <h2 class="panel-title">Terminal live feed</h2>
+        <pre id="terminalFeed" class="terminal-feed"></pre>
+      </section>
+    </div>
+
+    <aside class="sidebar-panels">
+      <section class="panel-events panel-live">
+        <h2 class="panel-title">Eventos</h2>
+        <ul id="eventsList" class="events-list">
+          <li class="empty-event">Aguardando eventos…</li>
+        </ul>
+      </section>
+
+      <section class="panel-changes panel-live">
+        <h2 class="panel-title">
+          Mudanças
+          <span id="changesBadge" class="changes-badge hidden">0</span>
+        </h2>
+        <ul id="changesList" class="changes-list">
+          <li class="empty-event">Nenhuma mudança pendente.</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <div id="deviceDetailsModal" class="modal modal-details hidden">
+    <div class="modal-content modal-details-content">
+      <header class="dd-header">
+        <div>
+          <h3 id="ddDetailTitle">Device Details</h3>
+          <p id="ddDetailSubtitle" class="dd-subtitle">—</p>
+        </div>
+        <button type="button" id="ddCloseBtn" class="dd-close" aria-label="Fechar">✕</button>
+      </header>
+
+      <nav class="dd-tabs">
+        <button type="button" class="dd-tab active" data-tab="Overview">Overview</button>
+        <button type="button" class="dd-tab" data-tab="Events">Events</button>
+        <button type="button" class="dd-tab" data-tab="Ports">Ports</button>
+        <button type="button" class="dd-tab" data-tab="Notes">Notes</button>
+        <button type="button" class="dd-tab" data-tab="Changes">Changes</button>
+      </nav>
+
+      <div id="ddPanelOverview" class="dd-panel active">
+        <div id="ddOverviewGrid" class="dd-grid"></div>
+        <section class="dd-actions-block">
+          <h4>Ações seguras</h4>
+          <label>Nome amigável <input type="text" id="ddRenameInput" maxlength="120" /></label>
+          <div class="dd-row-2">
+            <label>Tipo <select id="ddTypeSelect"><option value="router">router</option><option value="laptop">laptop</option><option value="camera">camera</option><option value="phone">phone</option><option value="unknown">unknown</option></select></label>
+            <label>Tag <select id="ddTagSelect"><option value="trusted">trusted</option><option value="iot">iot</option><option value="camera">camera</option><option value="unknown">unknown</option></select></label>
+          </div>
+          <div class="dd-action-btns">
+            <button type="button" id="ddSaveMetaBtn" class="btn-primary btn-small">Salvar nome/tipo/tag</button>
+            <button type="button" id="ddTrustedBtn" class="btn-secondary btn-small">Marcar trusted</button>
+            <button type="button" id="ddExportBtn" class="btn-secondary btn-small">↓ Export JSON</button>
+          </div>
+        </section>
+      </div>
+
+      <div id="ddPanelEvents" class="dd-panel">
+        <p class="dd-hint">Últimos 20 eventos (IP / MAC)</p>
+        <div id="ddEventsList" class="dd-events"></div>
+      </div>
+
+      <div id="ddPanelPorts" class="dd-panel">
+        <p class="dd-hint">Portas do último scan · sensíveis destacadas</p>
+        <div id="ddPortsList" class="dd-ports"></div>
+      </div>
+
+      <div id="ddPanelNotes" class="dd-panel">
+        <label class="dd-notes-label">Notas manuais (somente organização local)
+          <textarea id="ddNotesInput" rows="8" maxlength="4000" placeholder="Ex: Câmera da garagem, instalada em mar/2026…"></textarea>
+        </label>
+        <button type="button" id="ddSaveNotesBtn" class="btn-primary">Salvar notas</button>
+      </div>
+
+      <div id="ddPanelChanges" class="dd-panel">
+        <p class="dd-hint">Mudanças vs baseline (comparação local)</p>
+        <div id="ddChangesList" class="dd-changes"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Apenas rede local · Sem brute force · Sem exploração · Sem scan público</p>
+  </footer>
+
+  <script src="/static/topology.js"></script>
+  <script src="/static/device-details.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
