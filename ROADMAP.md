@@ -4,6 +4,11 @@ Este roadmap registra direções de estudo e evolução do projeto. Itens listad
 
 ## Próxima iteração
 
+- Alertas para eventos importantes.
+- Estatísticas mais claras sobre dispositivos e conectividade.
+- Mapa visual da rede com melhor organização.
+- Monitoramento em tempo real mais completo.
+- Melhorias de UX no dashboard.
 - Persistir histórico de conectividade no SQLite.
 - Melhorar filtros temporais de eventos e métricas.
 - Adicionar modo de demonstração com dados totalmente fictícios.

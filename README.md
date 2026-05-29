@@ -2,7 +2,7 @@
 
 # Cyber Home Dashboard
 
-**Local network monitoring dashboard built with FastAPI, SQLite, WebSocket and a cyberpunk UI.**
+**Dashboard de monitoramento de rede doméstica desenvolvido para estudar redes, backend, bancos de dados e visualização de dados.**
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white)
@@ -10,7 +10,7 @@
 ![WebSocket](https://img.shields.io/badge/WebSocket-Realtime-00D9FF?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-1fb56b?style=flat-square)
 
-Central local e defensiva para monitorar dispositivos autorizados, saúde do notebook e conectividade da internet.
+Meu principal projeto técnico: uma central local e defensiva para monitorar dispositivos autorizados, saúde do notebook e conectividade da internet.
 
 </div>
 
@@ -30,13 +30,22 @@ As imagens de portfólio usam identificadores e endereços de rede mascarados.
 
 ## Por que este projeto existe
 
-Este projeto foi criado como uma peça prática de portfólio: uma aplicação local, visual e funcional que mostra backend, banco de dados, tempo real, interface web e cuidados de segurança em um problema fácil de entender.
+Este projeto foi criado para aprendizado prático. Sou estudante de Sistemas de Informação e estou usando o Cyber Home Dashboard para estudar redes, backend, persistência de dados, visualização e organização de uma aplicação completa.
 
-Ele simula uma central para acompanhar a rede de casa ou de um pequeno laboratório, sem depender de serviços externos e sem executar ações invasivas.
+Ele ainda está em evolução e não é um produto finalizado. A ideia é construir com profundidade, melhorar aos poucos e documentar o que estou aprendendo.
 
-## Features
+## Objetivo
 
-- Inventário local de dispositivos limitado à sub-rede autorizada.
+Ser meu principal projeto técnico no GitHub.
+
+## Funcionalidades atuais
+
+- Descoberta de dispositivos limitada à sub-rede autorizada.
+- Monitoramento local do notebook e da internet.
+- Histórico e eventos de dispositivos.
+- Dashboard web.
+- Persistência com SQLite.
+- API com FastAPI.
 - Perfis de rede separados por gateway, sub-rede e SSID para preservar históricos por ambiente.
 - Eventos de dispositivos novos, offline e retornando online.
 - Baseline de mudanças em hostname, vendor, MAC, IP e portas observadas.
@@ -144,11 +153,14 @@ Este projeto reúne estudos práticos sobre:
 
 ## Roadmap
 
+- Alertas.
+- Estatísticas.
+- Mapa visual da rede.
+- Monitoramento em tempo real mais completo.
+- Melhorias de UX.
 - Persistência de histórico de conectividade.
 - Autenticação local para acesso ao dashboard.
 - Docker e execução em mini PC ou Raspberry Pi.
-- Notificações locais para eventos relevantes.
-- Uso responsável de IA para resumir eventos e sugerir verificações defensivas.
 
 Veja o planejamento completo em [ROADMAP.md](ROADMAP.md).
 

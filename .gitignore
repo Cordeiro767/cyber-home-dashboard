@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 .vendor/
 .profile-Cordeiro767/
+.revenue-vision/
 .pytest_cache/
 
 # Local configuration
