@@ -28,6 +28,12 @@ As imagens de portfólio usam identificadores e endereços de rede mascarados.
 
 **[Assistir demonstração curta](docs/demo/dashboard-demo.webm)**
 
+## Por que este projeto existe
+
+Este projeto foi criado como uma peça prática de portfólio: uma aplicação local, visual e funcional que mostra backend, banco de dados, tempo real, interface web e cuidados de segurança em um problema fácil de entender.
+
+Ele simula uma central para acompanhar a rede de casa ou de um pequeno laboratório, sem depender de serviços externos e sem executar ações invasivas.
+
 ## Features
 
 - Inventário local de dispositivos limitado à sub-rede autorizada.
@@ -129,6 +135,7 @@ Leia [SECURITY.md](SECURITY.md) antes de adaptar o scanner ou disponibilizar a a
 
 Este projeto reúne estudos práticos sobre:
 
+- construção de um MVP completo com backend, frontend e persistência;
 - separação de histórico por contexto de rede;
 - APIs e atualizações em tempo real;
 - observabilidade local com métricas úteis;

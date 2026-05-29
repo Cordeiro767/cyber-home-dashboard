@@ -2,15 +2,18 @@
 __pycache__/
 *.py[cod]
 .venv/
+.vendor/
+.profile-Cordeiro767/
 .pytest_cache/
 
 # Local configuration
 .env
 
 # Runtime data
-data/*.db
-data/*.db-*
-logs/*.log
+data/*
+!data/.gitkeep
+logs/*
+!logs/.gitkeep
 diagnostics/*.json
 
 # Network captures and large local artifacts
